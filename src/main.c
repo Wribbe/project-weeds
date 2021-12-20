@@ -216,7 +216,7 @@ main(int argc, char * argv[])
   Atom protocols[] = {WM_DELETE_WINDOW};
   XSetWMProtocols(display, window, protocols, sizeof(protocols)/sizeof(Atom));
 
-  XSelectInput(display, window, KeyPressMask | ButtonPressMask | ExposureMask);
+  XSelectInput(display, window, KeyPressMask | KeyReleaseMask | ButtonPressMask | ExposureMask);
   XClientMessageEvent * client_message = NULL;
 
   bool window_should_close = false;
@@ -238,6 +238,13 @@ main(int argc, char * argv[])
         if (client_message->data.l[0] == WM_DELETE_WINDOW) {
           window_should_close = true;
         }
+        break;
+      case KeyPress:
+      case KeyRelease:
+
+        printf("%s\n", "key pressed");
+        break;
+        printf("%s\n", "key released");
         break;
     }
   }
