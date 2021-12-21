@@ -212,6 +212,7 @@ main(int argc, char * argv[])
   WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", false);
 
   XEvent event = {0};
+  XKeyEvent event_key = {0};
 
   Atom protocols[] = {WM_DELETE_WINDOW};
   XSetWMProtocols(display, window, protocols, sizeof(protocols)/sizeof(Atom));
@@ -241,10 +242,7 @@ main(int argc, char * argv[])
         break;
       case KeyPress:
       case KeyRelease:
-
-        printf("%s\n", "key pressed");
-        break;
-        printf("%s\n", "key released");
+        printf("key was %s\n", event.type == KeyPress ? "pressed" : "released");
         break;
     }
   }
