@@ -234,29 +234,31 @@ main(int argc, char * argv[])
     glXSwapBuffers(display, window);
 
     XFlush(display);
-    XNextEvent(display, &event);
-    switch (event.type) {
-      case ClientMessage:
-        client_message = (XClientMessageEvent*)&event;
-        if (client_message->data.l[0] == WM_DELETE_WINDOW) {
-          window_should_close = true;
-        }
-        break;
-      case KeyPress:
-      case KeyRelease:
-        event_key = (XKeyEvent *)&event;
-        XLookupString(event_key, buff_key_name, size_buff_key_name, NULL, NULL);
-        printf(
-          "key (%d)\t%s\twas %s\tstate: %d\n",
-          event_key->keycode,
-          buff_key_name,
-          event.type == KeyPress ? "pressed" : "released",
-          event_key->state
-        );
-        if (event_key->keycode == 24) { // 'q' key.
-          window_should_close = true;
-        }
-        break;
+    while(XPending(display)) {
+      XNextEvent(display, &event);
+      switch (event.type) {
+        case ClientMessage:
+          client_message = (XClientMessageEvent*)&event;
+          if (client_message->data.l[0] == WM_DELETE_WINDOW) {
+            window_should_close = true;
+          }
+          break;
+        case KeyPress:
+        case KeyRelease:
+          event_key = (XKeyEvent *)&event;
+          XLookupString(event_key, buff_key_name, size_buff_key_name, NULL, NULL);
+          printf(
+            "key (%d)\t%s\twas %s\tstate: %d\n",
+            event_key->keycode,
+            buff_key_name,
+            event.type == KeyPress ? "pressed" : "released",
+            event_key->state
+          );
+          if (event_key->keycode == 24) { // 'q' key.
+            window_should_close = true;
+          }
+          break;
+      }
     }
   }
 }
