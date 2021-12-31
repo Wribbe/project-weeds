@@ -253,6 +253,9 @@ main(int argc, char * argv[])
           event.type == KeyPress ? "pressed" : "released",
           event_key->state
         );
+        if (event_key->keycode == 24) { // 'q' key.
+          window_should_close = true;
+        }
         break;
     }
   }
