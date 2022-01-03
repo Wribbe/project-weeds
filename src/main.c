@@ -227,6 +227,17 @@ main(int argc, char * argv[])
     XFlush(display);
     while(XPending(display)) {
       XNextEvent(display, &event);
+
+      if (XPending(display)) {
+        XPeekEvent(display, &event_next);
+        if (event.xany.serial == event_next.xany.serial) {
+          if (event_next.type == KeyPress) {
+            XNextEvent(display, &event);
+          }
+          continue;
+        }
+      }
+
       switch (event.type) {
         case ClientMessage:
           client_message = (XClientMessageEvent*)&event;
