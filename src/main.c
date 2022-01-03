@@ -250,11 +250,12 @@ main(int argc, char * argv[])
           event_key = (XKeyEvent *)&event;
           XLookupString(event_key, buff_key_name, size_buff_key_name, NULL, NULL);
           printf(
-            "key (%d)\t%s\twas %s\tstate: %d\n",
+            "key (%d)\t%s\twas %s\tstate: %d\tserial: %lu\n",
             event_key->keycode,
             buff_key_name,
             event.type == KeyPress ? "pressed" : "released",
-            event_key->state
+            event_key->state,
+            event_key->serial
           );
           if (event_key->keycode == 24) { // 'q' key.
             window_should_close = true;
