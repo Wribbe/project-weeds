@@ -190,6 +190,8 @@ main(int argc, char * argv[])
   GLfloat verts[] = {
     -1.0f,  1.0f, 0.0f,
      1.0f, -1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f,
   };
 
   GLuint VBO, VAO;
@@ -302,7 +304,7 @@ main(int argc, char * argv[])
 
     glUseProgram(shader_program);
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0, 2);
+    glDrawArrays(GL_LINES, 0, 4);
     glXSwapBuffers(display, window);
   }
 }
