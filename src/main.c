@@ -39,12 +39,15 @@ int
 main(int argc, char * argv[])
 {
 
+  int WINDOW_WIDTH = 800;
+  int WINDOW_HEIGHT = 600;
+
   Display * display = XOpenDisplay(NULL);
   Window window = XCreateSimpleWindow(
     display,
     DefaultRootWindow(display),
     10, 10,
-    800, 600,
+    WINDOW_HEIGHT, WINDOW_WIDTH,
     0, 0,
     0
   );
@@ -274,11 +277,23 @@ main(int argc, char * argv[])
           break;
         case ConfigureNotify:
           event_config = (XConfigureEvent *)&event;
-          printf(
-            "Configure Notify: width: %d, height: %d\n",
-            event_config->width,
-            event_config->height
-          );
+
+          int width_new = event_config->width;
+          int height_new = event_config->height;
+
+          if (height_new != WINDOW_HEIGHT || width_new != WINDOW_WIDTH) {
+
+            WINDOW_WIDTH = width_new;
+            WINDOW_HEIGHT = height_new;
+
+            glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+            printf(
+              "Window resized: width: %d, height: %d\n",
+              WINDOW_WIDTH, WINDOW_HEIGHT
+            );
+
+          }
           break;
       }
     }
