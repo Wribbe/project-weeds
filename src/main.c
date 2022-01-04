@@ -47,7 +47,7 @@ main(int argc, char * argv[])
     display,
     DefaultRootWindow(display),
     10, 10,
-    WINDOW_HEIGHT, WINDOW_WIDTH,
+    WINDOW_WIDTH, WINDOW_HEIGHT,
     0, 0,
     0
   );
