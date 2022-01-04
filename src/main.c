@@ -211,14 +211,25 @@ main(int argc, char * argv[])
   WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", false);
 
   XEvent event = {0};
+  XEvent event_next = {0};
   XKeyEvent * event_key = NULL;
+  XConfigureEvent * event_config = NULL;
+
   #define size_buff_key_name 10
   char buff_key_name[size_buff_key_name] = {0};
 
   Atom protocols[] = {WM_DELETE_WINDOW};
   XSetWMProtocols(display, window, protocols, sizeof(protocols)/sizeof(Atom));
 
-  XSelectInput(display, window, KeyPressMask | KeyReleaseMask | ButtonPressMask | ExposureMask);
+  XSelectInput(
+    display,
+    window,
+    KeyPressMask
+    | KeyReleaseMask
+    | ButtonPressMask
+    | ExposureMask
+    | StructureNotifyMask
+  );
   XClientMessageEvent * client_message = NULL;
 
   bool window_should_close = false;
@@ -260,6 +271,14 @@ main(int argc, char * argv[])
           if (event_key->keycode == 24) { // 'q' key.
             window_should_close = true;
           }
+          break;
+        case ConfigureNotify:
+          event_config = (XConfigureEvent *)&event;
+          printf(
+            "Configure Notify: width: %d, height: %d\n",
+            event_config->width,
+            event_config->height
+          );
           break;
       }
     }
