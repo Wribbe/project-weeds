@@ -291,7 +291,7 @@ main(int argc, char * argv[])
 
     glUseProgram(shader_program);
     glBindVertexArray(VAO);
-    draw_box(0, 0, WINDOW_WIDTH-10, 250);
+    draw_box(0, 0, WINDOW_WIDTH, 250);
     glXSwapBuffers(display, window);
   }
 }
@@ -300,10 +300,13 @@ void
 draw_box(int x, int y, int width, int height)
 {
 
-  float ww = width/(float)WINDOW_WIDTH;
-  float hh = height/(float)WINDOW_HEIGHT;
-  float xx = x/(float)WINDOW_WIDTH;
-  float yy = y/(float)WINDOW_HEIGHT;
+  float width_adjusted = WINDOW_WIDTH + 1;
+  float height_adjusted = WINDOW_HEIGHT + 1;
+
+  float ww = width/width_adjusted;
+  float hh = height/height_adjusted;
+  float xx = x/width_adjusted;
+  float yy = y/height_adjusted;
 
   GLfloat verts[] = {
     xx-ww, yy+hh, 0.0f,
