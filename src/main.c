@@ -34,13 +34,16 @@ PFNGLUSEPROGRAMPROC glUseProgram;
 
 Atom WM_DELETE_WINDOW = {0};
 
+GLuint VBO, VAO;
+int WINDOW_WIDTH = 800;
+int WINDOW_HEIGHT = 600;
+
+void
+draw_box(int x, int y, int width, int height);
 
 int
 main(int argc, char * argv[])
 {
-
-  int WINDOW_WIDTH = 800;
-  int WINDOW_HEIGHT = 600;
 
   Display * display = XOpenDisplay(NULL);
   Window window = XCreateSimpleWindow(
@@ -187,28 +190,9 @@ main(int argc, char * argv[])
   glUseProgram = (PFNGLUSEPROGRAMPROC)get_proc("glUseProgram");
 
 
-  GLfloat verts[] = {
-    -1.0f,  1.0f, 0.0f,
-     1.0f, -1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f,
-     1.0f,  1.0f, 0.0f,
-  };
-
-  GLuint VBO, VAO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glBindVertexArray(VAO);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(
-    GL_ARRAY_BUFFER,
-    sizeof(verts),
-    verts,
-    GL_STATIC_DRAW
-  );
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-  glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
@@ -305,7 +289,43 @@ main(int argc, char * argv[])
 
     glUseProgram(shader_program);
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0, 4);
+    draw_box(0, 0, WINDOW_WIDTH-10, 250);
     glXSwapBuffers(display, window);
   }
+}
+
+void
+draw_box(int x, int y, int width, int height)
+{
+
+  float ww = width/(float)WINDOW_WIDTH;
+  float hh = height/(float)WINDOW_HEIGHT;
+  float xx = x/(float)WINDOW_WIDTH;
+  float yy = y/(float)WINDOW_HEIGHT;
+
+  GLfloat verts[] = {
+    xx-ww, yy+hh, 0.0f,
+    xx+ww, yy+hh, 0.0f,
+
+    xx+ww, yy+hh, 0.0f,
+    xx+ww, yy-hh, 0.0f,
+
+    xx+ww, yy-hh, 0.0f,
+    xx-ww, yy-hh, 0.0f,
+
+    xx-ww, yy-hh, 0.0f,
+    xx-ww, yy+hh, 0.0f,
+  };
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(verts),
+    verts,
+    GL_STATIC_DRAW
+  );
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+
+  glDrawArrays(GL_LINES, 0, sizeof(verts));
 }
