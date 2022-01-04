@@ -221,6 +221,8 @@ main(int argc, char * argv[])
   );
   XClientMessageEvent * client_message = NULL;
 
+  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
   bool window_should_close = false;
   while (!window_should_close) {
 
