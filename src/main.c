@@ -283,19 +283,20 @@ main(int argc, char * argv[])
           int width_new = event_config->width;
           int height_new = event_config->height;
 
-          if (height_new != WINDOW_HEIGHT || width_new != WINDOW_WIDTH) {
-
-            WINDOW_WIDTH = width_new;
-            WINDOW_HEIGHT = height_new;
-
-            glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-            printf(
-              "Window resized: width: %d, height: %d\n",
-              WINDOW_WIDTH, WINDOW_HEIGHT
-            );
-
+          if (height_new == WINDOW_HEIGHT && width_new == WINDOW_WIDTH) {
+            continue;
           }
+
+          WINDOW_WIDTH = width_new;
+          WINDOW_HEIGHT = height_new;
+
+          glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+          printf(
+            "Window resized: width: %d, height: %d\n",
+            WINDOW_WIDTH, WINDOW_HEIGHT
+          );
+
           break;
       }
     }
