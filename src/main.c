@@ -207,8 +207,6 @@ main(int argc, char * argv[])
   glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)get_proc("glUniformMatrix4fv");
 
 
-
-
   glGenVertexArrays(1, &VAO_QUAD);
   glGenBuffers(1, &VBO_QUAD);
   glBindVertexArray(VAO_QUAD);
