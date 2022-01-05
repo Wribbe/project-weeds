@@ -34,12 +34,24 @@ PFNGLUSEPROGRAMPROC glUseProgram;
 
 Atom WM_DELETE_WINDOW = {0};
 
-GLuint VBO, VAO;
+GLuint VBO_QUAD, VAO_QUAD;
+GLuint program_shader;
+
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
 
+GLfloat VERTS_QUAD[] = {
+  -1.0f,  1.0f, 0.0f,
+  -1.0f, -1.0f, 0.0f,
+   1.0f,  1.0f, 0.0f,
+   1.0f,  1.0f, 0.0f,
+   1.0f, -1.0f, 0.0f,
+  -1.0f, -1.0f, 0.0f,
+};
+
+
 void
-draw_box(int x, int y, int width, int height);
+draw_quad(int x, int y, int width, int height);
 
 int
 main(int argc, char * argv[])
@@ -164,14 +176,14 @@ main(int argc, char * argv[])
   glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)get_proc("glGetProgramInfoLog");
   glDeleteShader = (PFNGLDELETESHADERPROC)get_proc("glDeleteShader");
 
-  GLuint shader_program = glCreateProgram();
-  glAttachShader(shader_program, shader_vertex);
-  glAttachShader(shader_program, shader_fragment);
-  glLinkProgram(shader_program);
-  glGetProgramiv(shader_program, GL_LINK_STATUS, &shader_success);
+  program_shader = glCreateProgram();
+  glAttachShader(program_shader, shader_vertex);
+  glAttachShader(program_shader, shader_fragment);
+  glLinkProgram(program_shader);
+  glGetProgramiv(program_shader, GL_LINK_STATUS, &shader_success);
 
   if (!shader_success) {
-    glGetProgramInfoLog(shader_program, 512, NULL, shader_info_log);
+    glGetProgramInfoLog(program_shader, 512, NULL, shader_info_log);
     printf("Failed to link program: %s\n", shader_info_log);
     return EXIT_FAILURE;
   }
@@ -190,12 +202,25 @@ main(int argc, char * argv[])
   glUseProgram = (PFNGLUSEPROGRAMPROC)get_proc("glUseProgram");
 
 
-  glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-  glBindVertexArray(VAO);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glGenVertexArrays(1, &VAO_QUAD);
+  glGenBuffers(1, &VBO_QUAD);
+  glBindVertexArray(VAO_QUAD);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_QUAD);
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(VERTS_QUAD),
+    VERTS_QUAD,
+    GL_STATIC_DRAW
+  );
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+
   glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", false);
 
@@ -288,49 +313,18 @@ main(int argc, char * argv[])
     }
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    glUseProgram(shader_program);
-    glBindVertexArray(VAO);
-    draw_box(0, 0, WINDOW_WIDTH, 250);
+    draw_quad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glXSwapBuffers(display, window);
   }
 }
 
+
 void
-draw_box(int x, int y, int width, int height)
+draw_quad(int x, int y, int width, int height)
 {
-
-  float width_adjusted = WINDOW_WIDTH + 1;
-  float height_adjusted = WINDOW_HEIGHT + 1;
-
-  float ww = width/width_adjusted;
-  float hh = height/height_adjusted;
-  float xx = x/width_adjusted;
-  float yy = y/height_adjusted;
-
-  GLfloat verts[] = {
-    xx-ww, yy+hh, 0.0f,
-    xx+ww, yy+hh, 0.0f,
-
-    xx+ww, yy+hh, 0.0f,
-    xx+ww, yy-hh, 0.0f,
-
-    xx+ww, yy-hh, 0.0f,
-    xx-ww, yy-hh, 0.0f,
-
-    xx-ww, yy-hh, 0.0f,
-    xx-ww, yy+hh, 0.0f,
-  };
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(
-    GL_ARRAY_BUFFER,
-    sizeof(verts),
-    verts,
-    GL_STATIC_DRAW
-  );
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-  glEnableVertexAttribArray(0);
-
-  glDrawArrays(GL_LINES, 0, sizeof(verts));
+  glUseProgram(program_shader);
+  glBindVertexArray(VAO_QUAD);
+  glDrawArrays(GL_TRIANGLES, 0, sizeof(VERTS_QUAD));
+  glBindVertexArray(0);
+  glUseProgram(0);
 }
