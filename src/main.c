@@ -42,15 +42,15 @@ GLuint program_shader;
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
 
-GLfloat VERTS_QUAD[] = {
-  -1.0f,  1.0f, 0.0f,
-  -1.0f, -1.0f, 0.0f,
-   1.0f,  1.0f, 0.0f,
-   1.0f,  1.0f, 0.0f,
-   1.0f, -1.0f, 0.0f,
-  -1.0f, -1.0f, 0.0f,
+GLfloat DATA_QUAD[] = {
+  // Vertices.         // Texture coords.
+  -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+  -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+   1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+   1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+   1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+  -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
 };
-
 
 void
 draw_quad(int x, int y, int width, int height);
@@ -216,13 +216,15 @@ main(int argc, char * argv[])
   glBindBuffer(GL_ARRAY_BUFFER, VBO_QUAD);
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(VERTS_QUAD),
-    VERTS_QUAD,
+    sizeof(DATA_QUAD),
+    DATA_QUAD,
     GL_STATIC_DRAW
   );
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void *)(2*sizeof(float)));
+  glEnableVertexAttribArray(1);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -347,7 +349,7 @@ draw_quad(int x, int y, int width, int height)
   glUniformMatrix4fv(ulocation_mpv, 1, ROW_MAJOR, mpv);
 
   glBindVertexArray(VAO_QUAD);
-  glDrawArrays(GL_TRIANGLES, 0, sizeof(VERTS_QUAD));
+  glDrawArrays(GL_TRIANGLES, 0, sizeof(DATA_QUAD));
 
   glBindVertexArray(0);
   glUseProgram(0);
