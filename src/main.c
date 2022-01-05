@@ -318,7 +318,7 @@ main(int argc, char * argv[])
     }
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    draw_quad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    draw_quad(0, 0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
     glXSwapBuffers(display, window);
   }
 }
@@ -327,9 +327,28 @@ main(int argc, char * argv[])
 void
 draw_quad(int x, int y, int width, int height)
 {
+
+  float xx = x/(float)WINDOW_WIDTH;
+  float yy = y/(float)WINDOW_HEIGHT;
+
+  float ww = width/(float)WINDOW_WIDTH;
+  float hh = height/(float)WINDOW_HEIGHT;
+
+  GLfloat mpv[] = {
+      ww, 0.0f, 0.0f,   xx,
+    0.0f,   hh, 0.0f,   yy,
+    0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f,
+  };
+
   glUseProgram(program_shader);
+  GLint ulocation_mpv = glGetUniformLocation(program_shader, "MPV");
+  GLboolean ROW_MAJOR = GL_TRUE;
+  glUniformMatrix4fv(ulocation_mpv, 1, ROW_MAJOR, mpv);
+
   glBindVertexArray(VAO_QUAD);
   glDrawArrays(GL_TRIANGLES, 0, sizeof(VERTS_QUAD));
+
   glBindVertexArray(0);
   glUseProgram(0);
 }
