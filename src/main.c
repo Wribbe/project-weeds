@@ -326,15 +326,14 @@ main(int argc, char * argv[])
   }
 }
 
-#define X_TO_PIXEL(x) x/(float)WINDOW_WIDTH
-#define Y_TO_PIXEL(y) y/(float)WINDOW_HEIGHT
+#define X_TO_PIXEL(x) (2*x-(float)WINDOW_WIDTH)/(float)WINDOW_WIDTH
+#define Y_TO_PIXEL(y) (2*y-(float)WINDOW_HEIGHT)/(float)WINDOW_HEIGHT
+#define WIDTH_TO_PIXEL(w) w/(float)WINDOW_WIDTH
+#define HEIGHT_TO_PIXEL(h) h/(float)WINDOW_HEIGHT
 
 void
 draw_glyph(int x, int y, char ch)
 {
-  float xx = x-((float)WINDOW_WIDTH/2);
-  float yy = y-((float)WINDOW_HEIGHT/2);
-
   size_t pixel_width = 10;
   size_t pixel_spacing = 10;
 
@@ -343,9 +342,9 @@ draw_glyph(int x, int y, char ch)
 
   for (uint8_t ii=0; ii<glyph_height; ii++) {
     for (uint8_t jj=0; jj<glyph_width; jj++) {
-      int x = xx+jj*(pixel_spacing+glyph_width);
-      int y = yy+ii*(pixel_spacing+glyph_height);
-      draw_quad(x, y, pixel_width, pixel_width);
+      int xx = x+jj*(pixel_spacing+pixel_width);
+      int yy = y+ii*(pixel_spacing+pixel_width);
+      draw_quad(xx, yy, pixel_width, pixel_width);
     }
   }
 }
@@ -357,8 +356,8 @@ draw_quad(int x, int y, int width, int height)
   float xx = X_TO_PIXEL(x);
   float yy = Y_TO_PIXEL(y);
 
-  float ww = X_TO_PIXEL(width);
-  float hh = X_TO_PIXEL(height);
+  float ww = WIDTH_TO_PIXEL(width);
+  float hh = HEIGHT_TO_PIXEL(height);
 
   printf(
     "Drawing quad at x: %f and y: %f with w: %f and h: %f\n",
