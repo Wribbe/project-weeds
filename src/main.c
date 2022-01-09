@@ -55,6 +55,9 @@ GLfloat DATA_QUAD[] = {
 void
 draw_quad(int x, int y, int width, int height);
 
+void
+draw_glyph(int x, int y, char ch);
+
 int
 main(int argc, char * argv[])
 {
@@ -318,21 +321,49 @@ main(int argc, char * argv[])
     }
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    draw_quad(0, 0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+    draw_glyph(0, 0, 'a');
     glXSwapBuffers(display, window);
   }
 }
 
+#define X_TO_PIXEL(x) x/(float)WINDOW_WIDTH
+#define Y_TO_PIXEL(y) y/(float)WINDOW_HEIGHT
+
+void
+draw_glyph(int x, int y, char ch)
+{
+  float xx = x-((float)WINDOW_WIDTH/2);
+  float yy = y-((float)WINDOW_HEIGHT/2);
+
+  size_t pixel_width = 10;
+  size_t pixel_spacing = 10;
+
+  uint8_t glyph_width = 3;
+  uint8_t glyph_height = 5;
+
+  for (uint8_t ii=0; ii<glyph_height; ii++) {
+    for (uint8_t jj=0; jj<glyph_width; jj++) {
+      int x = xx+jj*(pixel_spacing+glyph_width);
+      int y = yy+ii*(pixel_spacing+glyph_height);
+      draw_quad(x, y, pixel_width, pixel_width);
+    }
+  }
+}
 
 void
 draw_quad(int x, int y, int width, int height)
 {
 
-  float xx = x/(float)WINDOW_WIDTH;
-  float yy = y/(float)WINDOW_HEIGHT;
+  float xx = X_TO_PIXEL(x);
+  float yy = Y_TO_PIXEL(y);
 
-  float ww = width/(float)WINDOW_WIDTH;
-  float hh = height/(float)WINDOW_HEIGHT;
+  float ww = X_TO_PIXEL(width);
+  float hh = X_TO_PIXEL(height);
+
+  printf(
+    "Drawing quad at x: %f and y: %f with w: %f and h: %f\n",
+    xx, yy, ww, hh
+  );
 
   GLfloat mpv[] = {
       ww, 0.0f, 0.0f,   xx,
