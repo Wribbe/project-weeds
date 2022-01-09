@@ -321,7 +321,7 @@ main(int argc, char * argv[])
     }
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    draw_glyph(0, 0, 'a');
+    draw_glyph(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'a');
     glXSwapBuffers(display, window);
   }
 }
@@ -335,7 +335,7 @@ void
 draw_glyph(int x, int y, char ch)
 {
   size_t pixel_width = 10;
-  size_t pixel_spacing = 10;
+  size_t pixel_spacing = 1;
 
   uint8_t glyph_width = 3;
   uint8_t glyph_height = 5;
