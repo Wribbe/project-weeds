@@ -52,6 +52,16 @@ GLfloat DATA_QUAD[] = {
   -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
 };
 
+uint8_t GLYPHS[][15] = {
+  {
+    0,1,0,
+    1,0,1,
+    1,1,1,
+    1,0,1,
+    1,0,1,
+  },
+};
+
 void
 draw_quad(int x, int y, int width, int height);
 
@@ -334,17 +344,25 @@ main(int argc, char * argv[])
 void
 draw_glyph(int x, int y, char ch)
 {
-  size_t pixel_width = 10;
-  size_t pixel_spacing = 1;
+  size_t pixel_width = 5;
+  size_t pixel_spacing = 0;
 
   uint8_t glyph_width = 3;
   uint8_t glyph_height = 5;
 
+  uint8_t * glyph_current = GLYPHS[0];
+
   for (uint8_t ii=0; ii<glyph_height; ii++) {
     for (uint8_t jj=0; jj<glyph_width; jj++) {
+
+      if (glyph_current[ii*glyph_width+jj] == 0) {
+        continue;
+      }
+
       int xx = x+jj*(pixel_spacing+pixel_width);
-      int yy = y+ii*(pixel_spacing+pixel_width);
+      int yy = y-ii*(pixel_spacing+pixel_width);
       draw_quad(xx, yy, pixel_width, pixel_width);
+
     }
   }
 }
